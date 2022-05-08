@@ -1,0 +1,26 @@
+{% extends "videos_interface/base.html" %} 
+{% load embed_video_tags %}
+
+	{% block page_content %}
+    
+    {% if user.is_authenticated %}
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+
+
+    <h1 class = 'mb-5'>Browse Videos</h1>
+    <div class = "d-flex flex-wrap">
+        {% for obj in objs %}
+        <div class = "px-3 mb-5">
+            {% video obj.video '426x240' %}
+            <div class = "d-flex justify-content-start">
+                <a  href="{% url 'video_detail' obj.pk %}">{{obj.title}}</a>
+            </div>  
+        </div>
+        {% endfor %} 
+    </div>       
+    
+	{%endblock%}
