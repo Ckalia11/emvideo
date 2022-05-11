@@ -20,7 +20,9 @@
         <div class = "px-3 mb-5">
             {% video obj.video '426x240' %}
             <div class = "d-flex justify-content-center">
-                <a  href='{{obj.get_absolute_url}}'>{{obj.title}}</a>
+                <form action = {{obj.get_absolute_url}} method = 'post'>  {% csrf_token %}
+                    <button type = 'submit' class = 'btn' value = {{obj.pk}} name = 'video'>{{obj.title}}</button>
+                </form>
             </div>  
         </div>
         {% endfor %} 

@@ -18,9 +18,14 @@ class Video(models.Model):
 class Comment(models.Model):
     comment = models.CharField(max_length=100)
     user =  models.ForeignKey(User, on_delete=models.CASCADE)
-    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True, to_field='id')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
 
-class Comments(models.Model):
-    show_comments = models.BooleanField()
+class Clicks(models.Model):
+    clicks = models.IntegerField()
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True, related_name='click_video')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = 'Click'
+        verbose_name_plural = 'Clicks'
 
