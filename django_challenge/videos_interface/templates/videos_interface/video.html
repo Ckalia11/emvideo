@@ -25,10 +25,22 @@
         <h3>Leave a comment</h3>
 	</div>
 
+    <form action = "" method = "post"> {% csrf_token %}
+        {% if show_comments == 'False' %}
+            <button class = 'btn btn-info btn-small' type='submit' value= {{show_comments}} name = 'show_comments'>Hide Comments</button>
+            {% for c in comments %}
+            {{c.comment}}
+            {{c.user}} <br>
+        {% else %}
+            <button class = 'btn btn-info btn-small' type='submit' value= {{show_comments}} name = 'show_comments'>Show Comments</button>
+        {%endif%}
+    </form>
+
     <form action = "" method="post"> {% csrf_token %}
         {{form.as_p}}
         <input type = "submit" value="submit">
     </form>
+
 
     <h3>Browse Related Videos:</h3>
 
@@ -42,10 +54,6 @@
         </div>
         {% endfor %} 
     </div> 
-
-    {% for c in comments %}
-    {{c.comment}}
-    {{c.user}} <br>
 
 {% endfor %}
 

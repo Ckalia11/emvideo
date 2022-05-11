@@ -2,22 +2,25 @@
 {% load embed_video_tags %}
 
 	{% block page_content %}
-    
-    {% if user.is_authenticated %}
-    <p><a href="{% url 'logout' %}">Log Out</a></p>
-{% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a>
-{% endif %}
+    <div class = 'container'>
+        <div class = 'row justify-content-end align-items-center' style = "height: 5em">
+            {% if user.is_authenticated %}
+                <div class = 'col-xs-4'><a href="{% url 'logout' %}" class="btn btn-secondary btn-sm">Logout</a>
+                </div>
+            {% else %}
+                <div class = 'col-xs-4'><a href="{% url 'login' %}" class = "btn btn-secondary btn-sm">Log In</a></div>
+            {% endif %}
+        </div>
+    </div>
 
 
-    <h1 class = 'mb-5'>Browse Videos</h1>
-    <div class = "d-flex flex-wrap">
+    <h1 class = 'mb-5 text-center'>Browse Videos</h1>
+    <div class = "d-flex flex-wrap justify-content-center">
         {% for obj in objs %}
         <div class = "px-3 mb-5">
             {% video obj.video '426x240' %}
-            <div class = "d-flex justify-content-start">
-                <a  href="{% url 'video_detail' obj.pk %}">{{obj.title}}</a>
+            <div class = "d-flex justify-content-center">
+                <a  href='{{obj.get_absolute_url}}'>{{obj.title}}</a>
             </div>  
         </div>
         {% endfor %} 

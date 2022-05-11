@@ -11,6 +11,7 @@ from django.contrib import messages
 
 def videos_interface(request):
     objs = Video.objects.all()
+    print(type(objs))
     return render(request, 'videos_interface/videos_interface.html', {'objs': objs})
 
 def video_detail(request, pk):
@@ -19,9 +20,15 @@ def video_detail(request, pk):
     comments = Comment.objects.filter(video = video)
 
     if request.method == 'GET':
-        print(request.user.id)
         form = CommentForm()
+        show_comments = False
     elif request.method == 'POST':
+        show_comments = request.POST['show_comments']
+        if show_comments == 'False':
+            show_comments = 'True'
+        elif show_comments == 'True':
+            show_comments = 'False'
+        print(request.POST)
         form = CommentForm(request.POST)
         if form.is_valid():
             messages.success(request, 'Comment was saved.')
@@ -29,6 +36,6 @@ def video_detail(request, pk):
             comment.save()
         else:
             print(form.errors)
-    return render(request, 'videos_interface/video.html', {'video': video, 'form': form, 'videos': videos, 'comments':comments})
+    return render(request, 'videos_interface/video.html', {'video': video, 'form': form, 'videos': videos, 'comments':comments, 'show_comments': show_comments})
 
     

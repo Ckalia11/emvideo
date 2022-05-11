@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
@@ -127,6 +129,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # where to redirect user after login
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"  # new
+LOGIN_REDIRECT_URL = reverse_lazy("videos_interface")
+LOGOUT_REDIRECT_URL = reverse_lazy("videos_interface") 
 
