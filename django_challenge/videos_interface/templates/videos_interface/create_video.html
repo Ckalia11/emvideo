@@ -1,0 +1,13 @@
+{% extends "videos_interface/base.html" %} 
+
+{% block page_content %}
+
+<h1 class = 'mb-5 text-center'>Create a Video</h1>
+<form enctype="multipart/form-data" method="POST" action="">
+    {% csrf_token %}
+    {{form.title }}
+    {{form.videofile}}
+    <input type="submit" value="Upload"/>
+</form>
+
+{%endblock%}

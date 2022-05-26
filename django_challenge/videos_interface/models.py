@@ -9,11 +9,13 @@ from django.urls import reverse
 
 class Video(models.Model):
     title = models.CharField(max_length=200)
-    video = EmbedVideoField()
-    clicks = models.IntegerField()
+    # video = EmbedVideoField()
+    videofile= models.FileField(upload_to='videos/', null=True, blank=True, verbose_name="")
+    clicks = models.IntegerField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
-    def get_absolute_url(self):
-        return reverse("video_detail", kwargs={"pk": self.pk})
+    def __str__(self):
+        return self.title
 
 class Comment(models.Model):
     comment = models.CharField(max_length=100)

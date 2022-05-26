@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +8,32 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Videos</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="{% static 'videos_interface/css/base.css' %}">
+
 </style>
 </head>
 <body>
-	{% block page_content %}
 
-	{% endblock page_content %}
-</body>
+	<div class = 'container'>
+		<div class = 'row justify-content-end align-items-center' style = "height: 5em">
+			{% if user.is_authenticated %}
+				<div class = 'col-xs-4'><a href="{% url 'logout' %}" class="btn btn-secondary btn-sm">Logout</a>
+				</div>
+			{% else %}
+				<div class = 'col-xs-4'><a href="{% url 'login' %}" class = "btn btn-secondary btn-sm">Log In</a></div>
+			{% endif %}
+
+			{% block nav_buttons %}
+
+			{% endblock nav_buttons %}
+
+
+		</div>
+	</div>
+
+		{% block page_content %}
+		
+		{% endblock page_content %}
+
+	</body>
 </html>
