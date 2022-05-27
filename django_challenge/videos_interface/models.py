@@ -1,5 +1,5 @@
 from django.db import models
-from  embed_video.fields  import  EmbedVideoField
+# from  embed_video.fields  import  EmbedVideoField
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -30,4 +30,13 @@ class Clicks(models.Model):
     class Meta:
         verbose_name = 'Click'
         verbose_name_plural = 'Clicks'
+
+class Thumbnail(models.Model):
+    image = models.ImageField(null=True, blank=True, verbose_name="")
+    video = models.OneToOneField(
+        Video,
+        blank = True,
+        null = True,
+        on_delete=models.CASCADE,
+    )
 

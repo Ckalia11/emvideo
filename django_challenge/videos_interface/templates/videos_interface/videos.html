@@ -3,7 +3,7 @@
 
 	{% block nav_buttons %}
     
-    <div class = 'col-xs-4' style = "padding: 1em;"><a href="{% url 'my_videos' %}" class = "btn btn-primary btn-sm">My Videos</a></div>
+    <div class = 'nav_buttons col-xs-4'><a href="{% url 'my_videos' %}" class = "btn btn-primary btn-sm">My Videos</a></div>
 
     {% endblock nav_buttons %}
 
@@ -11,19 +11,19 @@
 
     <h1 class = 'mb-5 text-center'>Browse Videos</h1>
     <div class = "d-flex flex-wrap justify-content-center">
-        {% for video in videos %}
+        {% for thumbnail in thumbnails %}
         <div class = "px-3 mb-5">
-            {% comment %} {% video obj.video '426x240' %}
-            <div class = "d-flex justify-content-center"> {% endcomment %}
-            <video width='400' controls>
-                <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
-            </video>
-                <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
+            <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
+             {% comment %} {% video obj.video '426x240' %} {% endcomment %}
+            <div class = "d-flex justify-content-center"> 
+                {% comment %} <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
                     <button type = 'submit' class = 'btn' value = {{video.pk}} name = 'video'>{{video.title}}</button>
-                </form>
+                </form> {% endcomment %}
+                <h5> {{thumbnail.video.title}}</h5>
             </div>  
         </div>
         {% endfor %} 
-    </div>       
+    </div>     
+
     
 	{%endblock%}

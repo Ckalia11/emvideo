@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Video, Comment, Clicks
+from .models import Video, Comment, Clicks, Thumbnail
 from embed_video.admin import AdminVideoMixin
 
 
@@ -11,3 +11,4 @@ class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
 admin.site.register(Video, MyModelAdmin)
 admin.site.register(Comment)
 admin.site.register(Clicks)
+admin.site.register(Thumbnail)
