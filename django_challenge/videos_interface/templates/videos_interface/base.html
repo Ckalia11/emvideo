@@ -7,32 +7,60 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Videos</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="{% static 'videos_interface/js/app.js' %}"></script>   
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{% static 'videos_interface/css/base.css' %}">
-
-</style>
 </head>
 <body>
 
-	<div class = 'container'>
-		<div class = 'row justify-content-end align-items-center' style = "height: 5em">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<a class="navbar-brand" href="{% url 'videos' %}">emvideo</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+	  
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		  <ul class="navbar-nav mr-auto">
 			{% block nav_buttons %}
 
 			{% endblock nav_buttons %}
+		  </ul>
+		  <form class="form-inline my-2 my-lg-0">
+			<input class="form-control mr-sm-2" type="search" placeholder="Search Videos" aria-label="Search">
+			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+		  </form>
+		  {% block login_button %}
 
+		  <ul class="navbar-nav ml-2">
 			{% if user.is_authenticated %}
-				<div class = 'nav_buttons col-xs-4'><a href="{% url 'logout' %}" class="btn btn-secondary btn-sm">Logout</a>
-				</div>
+			<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+			{% comment %} <a href="{% url 'logout' %}" class = "btn btn-secondary btn-sm">Log out</a> {% endcomment %}
+				{% comment %} <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{{request.user}}
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+						<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+					</div>
+				</li>  {% endcomment %}
 			{% else %}
-				<div class = 'nav_buttons col-xs-4'><a href="{% url 'login' %}" class = "btn btn-secondary btn-sm">Log In</a></div>
-			{% endif %}
+				<a class="nav-link" href="{% url 'login' %}">Login</a>
+			{% endif %} 
 
+			{% endblock %}
+		  </ul> 
 		</div>
-	</div>
+	</nav>
 
-		{% block page_content %}
-		
-		{% endblock page_content %}
+	{% block jumbotron %}
 
+	{% endblock %}
+
+	{% block page_content %}
+
+	{% endblock page_content %}
 	</body>
 </html>

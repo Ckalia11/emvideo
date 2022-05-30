@@ -1,0 +1,20 @@
+{% extends "videos_interface/base.html" %} 
+
+{% block nav_buttons %}
+    <li>
+        <a class="nav-link" href="{% url 'my_videos' %}">My Videos</a>
+    </li>
+
+{% endblock nav_buttons %}
+
+{% block page_content %}
+
+<h1 class = 'mb-5 text-center'>Edit Video</h1>
+<form enctype="multipart/form-data" method="POST" action="">
+    {% csrf_token %}
+    {{form.title }}
+    {{form.videofile}}
+    <input type="submit" value="Upload"/>
+</form>
+
+{%endblock%}

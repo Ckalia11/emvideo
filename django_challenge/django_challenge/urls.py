@@ -1,3 +1,5 @@
+from django.contrib.auth import views as auth_views
+
 """django_challenge URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -17,11 +19,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import reverse_lazy
+from videos_interface import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('videos/', include('videos_interface.urls')), 
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('forms/', include('forms.urls') ),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name = 'logout'),
+    path('create/', views.create_account_view, name = 'create_account'),
+    path('forms/', include('forms.urls')),
     
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

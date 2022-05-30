@@ -10,6 +10,13 @@ class VideoForm(forms.ModelForm):
         model= Video
         fields= ['title', 'videofile', 'clicks']
 
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
+        print(title)
+
+    def clean_videofile(self):
+        pass
+
 
 
 

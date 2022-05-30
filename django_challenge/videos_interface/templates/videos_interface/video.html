@@ -1,6 +1,13 @@
 {% extends "videos_interface/base.html" %} 
 {% load embed_video_tags %}
 
+{% block nav_buttons %}
+    
+<div class = 'nav_buttons col-xs-4'><a href="{% url 'videos' %}" class = "btn btn-info btn-sm">Browse Videos</a></div>
+
+
+{% endblock nav_buttons %}
+
 
 {% block page_content %}
 
@@ -11,6 +18,7 @@
     {% endfor %}
 </ul>
 {% endif %} {% endcomment %}
+
 
     <h1 class = 'mb-5 text-center'>{{video.title}}</h1>
     <div class = "d-flex flex-wrap justify-content-center">
@@ -24,23 +32,26 @@
 
     <h3 class = "mb-5 text-center">Leave a comment</h3>
         <form action = "" method="post"> {% csrf_token %}
-            <div class = "d-flex flex-wrap justify-content-center">
-                {{form.as_p}}
-                <input type = "submit" style = "margin-left: 1em; padding: 0px;" value="Submit">
+            <div class = "container">
+                <div class = "row">
+                    <div class = "col-12">
+                        <div class = "d-flex justify-content-center">
+                            {{form.as_p}}
+                            <input type = "submit" style = "margin-left: 1em; padding: 0px;" value="Submit">
+                        </div>
+                    </div>
+                    <div class = "col-12">
+                        <div class = "d-flex justify-content-center">
+                            {% for comment in comments %}
+                                {{comment.comment}}
+                                {{comment.user}} <br>
+                            {%endfor%}
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-
-    <div class = "container">
-        <div class = "row">
-            <div class = "col-6">
-                {% for c in comments %}
-                {{c.comment}}
-                {{c.user}} <br>
-        {%endfor%}
-            </div>
-        </div>
-    </div>
-
 
     <h3 class = "mb-5 text-center">Browse Related Videos:</h3>
 

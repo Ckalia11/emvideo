@@ -1,29 +1,44 @@
 {% extends "videos_interface/base.html" %} 
-{% load embed_video_tags %}
 
 	{% block nav_buttons %}
-    
-    <div class = 'nav_buttons col-xs-4'><a href="{% url 'my_videos' %}" class = "btn btn-primary btn-sm">My Videos</a></div>
-
+    {% if logged_in %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'my_videos' %}">My Videos</a>
+    </li> 
+    {% endif %}
     {% endblock nav_buttons %}
 
     {% block page_content %}
 
-    <h1 class = 'mb-5 text-center'>Browse Videos</h1>
+    <h2 class="text-dark m-4">Browse Popular Videos</h2>
+
+        {% for message in messages %}
+            <div class="container p-0">
+            <div class="alert {{ message.tags }} alert-info" role="alert" >
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="True">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+            </div>
+        {% endfor %}
+
     <div class = "d-flex flex-wrap justify-content-center">
         {% for thumbnail in thumbnails %}
         <div class = "px-3 mb-5">
-            <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
-             {% comment %} {% video obj.video '426x240' %} {% endcomment %}
+            <a href = "{% url 'video_detail' thumbnail.video.pk %}">
+                <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
+            </a>
             <div class = "d-flex justify-content-center"> 
                 {% comment %} <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
                     <button type = 'submit' class = 'btn' value = {{video.pk}} name = 'video'>{{video.title}}</button>
                 </form> {% endcomment %}
-                <h5> {{thumbnail.video.title}}</h5>
+                <h5 class = "video_title"> {{thumbnail.video.title}}</h5>
             </div>  
         </div>
         {% endfor %} 
     </div>     
+
 
     
 	{%endblock%}
