@@ -21,12 +21,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse_lazy
 from videos_interface import views
+from django.shortcuts import redirect
+from django.urls import reverse
+
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('videos/', include('videos_interface.urls')), 
     path('login/', views.login_view, name='login'),
+    path('videos/', include('videos_interface.urls')), 
     path('logout/', views.logout_view, name = 'logout'),
     path('create/', views.create_account_view, name = 'create_account'),
     path('forms/', include('forms.urls')),

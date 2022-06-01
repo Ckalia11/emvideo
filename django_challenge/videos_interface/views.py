@@ -18,6 +18,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
+import regex as re
+from django.contrib.auth.models import User
 
 
 
@@ -27,19 +29,38 @@ from django.db.utils import IntegrityError
 # Create your views here.
 
 def login_view(request):
+    logged_in = False
+    context = {}
     if request.method == "GET":
         if request.user.is_authenticated:
-            return redirect(reverse("videos"))
+            logged_in = True
+            user_id = request.session.get('_auth_user_id')
+            user = User.objects.get(pk=user_id)
+            first_name = user.first_name
+            context['first_name'] = first_name
     elif request.method == "POST":
-        username = request.POST.get('username')
+        if request.POST.get('auto_login') is not None:
+            return redirect(reverse('videos'))
+        username_or_email = request.POST.get('username_or_email')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        is_email = re.search("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$", username_or_email)
+        if is_email:
+            try:
+                user = User.objects.get(email = username_or_email)
+                username = user.username
+            except ObjectDoesNotExist:
+                messages.error(request, "There is no account associated with that email.")
+                return redirect(reverse("videos"))
+            user = authenticate(request, username = username, password = password)
+        else:
+            user = authenticate(request, username = username_or_email, password = password)
         if user is not None:
             login(request, user)
             return redirect(reverse("videos"))
         else:
             messages.error(request, "Invalid username or password")
-    context = {}
+    context['logged_in'] = logged_in
+    print(context)
     return render(request, "videos_interface/login.html", context)
 
 def logout_view(request):
@@ -48,11 +69,12 @@ def logout_view(request):
 
 def create_account_view(request):
     if request.method == "POST":
+        first_name = request.POST.get('first_name')
         username = request.POST.get('username')
         password = request.POST.get('password')
         email = request.POST.get('email')
         try:
-            user = User.objects.create_user(username = username, email = email, password = password)
+            user = User.objects.create_user(first_name = first_name, username = username, email = email, password = password)
             login(request, user)
             return redirect(reverse("videos"))
         except IntegrityError:
@@ -60,6 +82,7 @@ def create_account_view(request):
     return render(request, "videos_interface/create_account.html", {})
 
 def videos(request):
+    print("SESSIoN", request.session.items())
     logged_in = False
     if not request.user.is_anonymous:
         logged_in = True
@@ -88,6 +111,8 @@ def create_video(request):
     elif request.method == "POST":
         form = VideoForm(request.POST, request.FILES)
         if form.is_valid():
+            print("YO")
+            print("CLEANED", form.cleaned_data)
             title = form.cleaned_data.get("title")
             videofile = form.cleaned_data.get("videofile")
             user = request.user
