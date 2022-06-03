@@ -38,12 +38,14 @@
                     placeholder="First Name">
                 </div>
                 <div class="mb-3">
-                  <input type="text" class="form-control" id="Username" name = "username" aria-describedby="emailHelp"
+                  <input type="text" class="form-control" id="username" name = "username" aria-describedby="emailHelp"
                     placeholder="User Name">
                 </div>
+                <div class = "invalid-feedback invalid-username" style = "display:none"></div>
                 <div class="mb-3">
                     <input type="email" class="form-control" id="email" name = "email" placeholder="Email">
                 </div>
+                <div class = "invalid-feedback invalid-email" style = "display:none"></div>
                 <div class="mb-3">
                   <input type="password" class="form-control" id="password" name = "password" placeholder="Password">
                 </div>
@@ -60,5 +62,8 @@
       </div>
 </body>
 </html>
+
+<script src = "{% static 'videos_interface/js/create_account.js' %}"> </script>
+
 
 {% endblock %}

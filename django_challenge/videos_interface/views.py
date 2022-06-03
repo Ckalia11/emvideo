@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from msilib.schema import Error
 import re
 from turtle import title
@@ -20,11 +21,13 @@ from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 import regex as re
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+import json
+from django.core.validators import validate_email
 
 
 
-
-
+EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
 # Create your views here.
 
@@ -62,6 +65,49 @@ def login_view(request):
     context['logged_in'] = logged_in
     print(context)
     return render(request, "videos_interface/login.html", context)
+
+def validate_username(request):
+    data = json.loads(request.body)
+    username = str(data.get('username'))
+    if not username.isalnum():
+        return JsonResponse({"username_invalid": "Username should only contain alphanumeric characters"})
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({"username_invalid": "Username is not available"})
+    if len(username) < 5 or len(username) > 10:
+        return JsonResponse({"username_invalid": "Username should be between 5-10 characters"})
+    return JsonResponse({"username_valid": True})
+
+def validate_email(request):
+    data = json.loads(request.body)
+    email = data.get('email')
+    if not re.match(EMAIL_REGEX, email):
+        return JsonResponse({"email_invalid": "Invalid email"})
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({"email_invalid": "An account with this email is registered. Please login."})
+    return JsonResponse({"email_valid": True})
+
+def validate_login(request):
+    data = json.loads(request.body)
+    username_or_email = data.get('username_or_email')
+    password = data.get('password')
+    is_email = re.search("^[\w\-\.]+@([\w-]+\.)+[\w-]{2,4}$", username_or_email)
+    if is_email:
+        try:
+            user = User.objects.get(email = username_or_email)
+            username = user.username
+        except ObjectDoesNotExist:
+            messages.error(request, "There is no account associated with that email.")
+            return JsonResponse({'login_invalid': True})
+        user = authenticate(request, username = username, password = password)
+    else:
+        user = authenticate(request, username = username_or_email, password = password)
+    if user is not None:
+        login(request, user)
+        return redirect(reverse("videos"))
+    else:
+        messages.error(request, "Invalid username or password")
+        return JsonResponse({'login_invalid': True})
+
 
 def logout_view(request):
     logout(request)
