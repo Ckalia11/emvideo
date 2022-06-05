@@ -35,7 +35,9 @@ urlpatterns = [
     path('accounts/create/', views.create_account_view, name = 'create_account'),
     path('accounts/create/validate_username/', csrf_exempt(views.validate_username), name = 'validate_username'),
     path('accounts/create/validate_email/', csrf_exempt(views.validate_email), name = 'validate_email'),
+    path('accounts/create/validate_create_account/', csrf_exempt(views.validate_create_account), name = 'validate_create_account'),
     path('accounts/login/validate_login/', csrf_exempt(views.validate_login), name = 'validate_login'),
+    path('accounts/login/videos/', csrf_exempt(views.videos), name = 'redirect_login'),
     path('videos/', include('videos_interface.urls')), 
     # path('forms/', include('forms.urls')),
     

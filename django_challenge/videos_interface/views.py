@@ -66,25 +66,33 @@ def login_view(request):
     print(context)
     return render(request, "videos_interface/login.html", context)
 
-def validate_username(request):
-    data = json.loads(request.body)
-    username = str(data.get('username'))
+def validate_username(username):
     if not username.isalnum():
-        return JsonResponse({"username_invalid": "Username should only contain alphanumeric characters"})
+        return {"username_invalid": "Username should only contain alphanumeric characters"}
     if User.objects.filter(username=username).exists():
-        return JsonResponse({"username_invalid": "Username is not available"})
+        return {"username_invalid": "Username is not available"}
     if len(username) < 5 or len(username) > 10:
-        return JsonResponse({"username_invalid": "Username should be between 5-10 characters"})
-    return JsonResponse({"username_valid": True})
+        return {"username_invalid": "Username should be between 3-8 characters"}
+    return {"username_valid": True}
 
-def validate_email(request):
-    data = json.loads(request.body)
-    email = data.get('email')
+def validate_email(email):
     if not re.match(EMAIL_REGEX, email):
-        return JsonResponse({"email_invalid": "Invalid email"})
+        return {"email_invalid": "Invalid email"}
     if User.objects.filter(email=email).exists():
-        return JsonResponse({"email_invalid": "An account with this email is registered. Please login."})
-    return JsonResponse({"email_valid": True})
+        return {"email_invalid": "An account with this email is registered. Please login."}
+    return {"email_valid": True}
+    
+def validate_create_account(request):
+    response = {}
+    data = json.loads(request.body)
+    username = data.get('username')
+    email = data.get('email')
+    # password = data.get('password')
+    username_validation = validate_username(username)
+    email_validation = validate_email(email)
+    response = dict(username_validation)
+    response.update(email_validation)
+    return JsonResponse(response)
 
 def validate_login(request):
     data = json.loads(request.body)
@@ -97,16 +105,17 @@ def validate_login(request):
             username = user.username
         except ObjectDoesNotExist:
             messages.error(request, "There is no account associated with that email.")
-            return JsonResponse({'login_invalid': True})
+            return JsonResponse({'login_valid': False})
         user = authenticate(request, username = username, password = password)
     else:
         user = authenticate(request, username = username_or_email, password = password)
     if user is not None:
         login(request, user)
-        return redirect(reverse("videos"))
+        # return redirect(reverse('videos'))
+        return JsonResponse({'login_valid': True})
     else:
         messages.error(request, "Invalid username or password")
-        return JsonResponse({'login_invalid': True})
+        return JsonResponse({'login_valid': False})
 
 
 def logout_view(request):
