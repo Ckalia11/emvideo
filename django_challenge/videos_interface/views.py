@@ -87,9 +87,17 @@ def validate_create_account(request):
     data = json.loads(request.body)
     username = data.get('username')
     email = data.get('email')
-    # password = data.get('password')
+    password = data.get('password')
     username_validation = validate_username(username)
     email_validation = validate_email(email)
+    if username_validation.get('username_valid') and email_validation.get('email_valid'):
+        # try:
+            user = User.objects.create_user(username = username, email = email, password = password)
+            login(request, user)
+            # return redirect(reverse("videos"))
+        # except IntegrityError:
+        #     del username_validation['username_valid']
+        #     username_validation['username_invalid'] = "An account with this information exists. Please login."
     response = dict(username_validation)
     response.update(email_validation)
     return JsonResponse(response)
@@ -123,17 +131,17 @@ def logout_view(request):
     return redirect(reverse("login"))
 
 def create_account_view(request):
-    if request.method == "POST":
-        first_name = request.POST.get('first_name')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
-        try:
-            user = User.objects.create_user(first_name = first_name, username = username, email = email, password = password)
-            login(request, user)
-            return redirect(reverse("videos"))
-        except IntegrityError:
-            messages.error(request, "An account with this information exists. Please login.")
+    # if request.method == "POST":
+    #     first_name = request.POST.get('first_name')
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+    #     email = request.POST.get('email')
+    #     try:
+    #         user = User.objects.create_user(first_name = first_name, username = username, email = email, password = password)
+    #         login(request, user)
+    #         return redirect(reverse("videos"))
+    #     except IntegrityError:
+    #         messages.error(request, "An account with this information exists. Please login.")
     return render(request, "videos_interface/create_account.html", {})
 
 def videos(request):
