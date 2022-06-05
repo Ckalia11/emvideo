@@ -24,21 +24,20 @@ from videos_interface import views
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/login/', views.login_view, name='login'),
-    path('accounts/logout/', views.logout_view, name = 'logout'),
-    path('accounts/create/', views.create_account_view, name = 'create_account'),
-    path('accounts/create/validate_username/', csrf_exempt(views.validate_username), name = 'validate_username'),
-    path('accounts/create/validate_email/', csrf_exempt(views.validate_email), name = 'validate_email'),
-    path('accounts/create/validate_create_account/', csrf_exempt(views.validate_create_account), name = 'validate_create_account'),
+    path('accounts/login/', TemplateView.as_view(template_name = 'videos_interface/login.html'), name='login'),
     path('accounts/login/validate_login/', csrf_exempt(views.validate_login), name = 'validate_login'),
-    path('accounts/login/videos/', csrf_exempt(views.videos), name = 'redirect_login'),
+    path('accounts/create/', TemplateView.as_view(template_name = 'videos_interface/create_account.html'), name = 'create_account'),
+    path('accounts/create/validate_create_account/', csrf_exempt(views.validate_create_account), name = 'validate_create_account'),
+    path('accounts/create/validate_username_create/', csrf_exempt(views.validate_username_create), name = 'validate_username_create'),
+    path('accounts/create/validate_email_create/', csrf_exempt(views.validate_email_create), name = 'validate_email_create'),
+    path('accounts/logout', views.logout_view, name = 'logout'),
     path('videos/', include('videos_interface.urls')), 
-    # path('forms/', include('forms.urls')),
     
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

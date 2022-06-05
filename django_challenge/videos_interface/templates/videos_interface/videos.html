@@ -1,4 +1,7 @@
+
 {% extends "videos_interface/base.html" %} 
+{% load static %}
+
 
 	{% block nav_buttons %}
     {% if logged_in %}
@@ -39,6 +42,7 @@
         {% endfor %} 
     </div>     
 
+    <script src = "{% static 'videos_interface/js/create_account.js' %}"> </script>
 
     
 	{%endblock%}

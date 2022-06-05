@@ -1,5 +1,5 @@
-const username = document.querySelector('#username');
-const email = document.querySelector('#email');
+const username = document.querySelector('#create-username');
+const email = document.querySelector('#create-email');
 const usernameFeedback = document.querySelector('.invalid-username');
 const emailFeedback = document.querySelector('.invalid-email');
 const createAccountFeedback = document.querySelector('.invalid-create-account')
@@ -7,9 +7,9 @@ const createFormSubmit = document.querySelector('#create-account-form');
 
 createFormSubmit.addEventListener('submit', (e) => {
     e.preventDefault();
-    const usernameVal = e.target.elements.username.value;
-    const emailVal = e.target.elements.email.value;
-    const passwordVal = e.target.elements.password.value;
+    const usernameVal = e.target.elements['create-username'].value;
+    const emailVal = e.target.elements['create-email'].value;
+    const passwordVal = e.target.elements['create-password'].value;
 
     usernameFeedback.style.display = "none";
     emailFeedback.style.display = "none";
@@ -24,16 +24,23 @@ createFormSubmit.addEventListener('submit', (e) => {
         .then(data => {
             console.log('data', data)
 
-            if (data.username_invalid) {
-                // username.classList.add("is-invalid");
-                usernameFeedback.style.display = "block";
-                usernameFeedback.innerHTML = `<p>${data.username_invalid}</p>`
+            if (data.username_valid == true && data.email_valid == true) {
+                window.location.href = '/videos/';
             }
-            if (data.email_invalid) {
-                //                 email.classList.add("is-invalid");
-                emailFeedback.style.display = "block";
-                emailFeedback.innerHTML = `<p>${data.email_invalid}</p>`
+
+            else {
+                if (data.username_invalid) {
+                    // username.classList.add("is-invalid");
+                    usernameFeedback.style.display = "block";
+                    usernameFeedback.innerHTML = `<p>${data.username_invalid}</p>`
+                }
+                if (data.email_invalid) {
+                    //                 email.classList.add("is-invalid");
+                    emailFeedback.style.display = "block";
+                    emailFeedback.innerHTML = `<p>${data.email_invalid}</p>`
+                }
             }
+            
         });
     }
 

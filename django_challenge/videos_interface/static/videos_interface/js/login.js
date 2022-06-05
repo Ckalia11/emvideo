@@ -7,8 +7,8 @@ const loginFeedback = document.querySelector('.invalid-login');
 loginSubmit.addEventListener('submit', (e) => {
     console.log('e', e);
     e.preventDefault();
-    const usernameOrEmailVal = e.target.elements.username_or_email.value;
-    const passwordVal = e.target.elements.password.value;
+    const usernameOrEmailVal = e.target.elements['login-username'].value;
+    const passwordVal = e.target.elements['login-password'].value;
 
     loginFeedback.style.display = 'none';
 
