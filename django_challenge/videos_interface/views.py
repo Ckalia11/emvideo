@@ -41,14 +41,12 @@ def videos(request):
     return render(request, 'videos_interface/videos.html', context)
 
 def my_videos(request):
-    videos = Video.objects.filter(user = request.user)
-    for video in videos:
-        print("my_videos", video)
-        _get_thumbnail(video)
-    thumbnails = Thumbnail.objects.all()
-    if not videos:
+    context = {}
+    thumbnails = Thumbnail.objects.filter(video__user = request.user)
+    if not thumbnails:
         messages.info(request, "You haven't created any videos.")
-    context = {"thumbnails": thumbnails}
+    else:  
+        context["thumbnails"] = thumbnails
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):
@@ -61,6 +59,7 @@ def create_video(request):
             videofile = form.cleaned_data.get("videofile")
             user = request.user
             video = Video.objects.create(title = title, videofile = videofile, user = user)
+            _get_thumbnail(video)
             return redirect(reverse("my_videos"))
     context= {
               'form': form
@@ -107,6 +106,26 @@ def my_video_edit(request, pk):
             video.user = request.user
             video.save()
             return redirect("my_videos")
+
+def my_video_delete(request, pk):
+    thumb = Thumbnail.objects.get(video=pk)
+    image_path = str(thumb.image)
+
+    if os.path.exists(image_path):
+        try:
+            os.remove(image_path)
+            try:
+                Thumbnail.objects.filter(video=pk).delete()
+            except Exception as e:
+                print(e)
+        except Exception as e:
+            print(e)
+    return redirect(reverse('my_videos'))
+        
+
+
+
+
 
 def _get_thumbnail(video):
     try:

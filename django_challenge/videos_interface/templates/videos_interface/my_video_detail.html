@@ -1,21 +1,19 @@
 {% extends "videos_interface/base.html" %} 
 {% load embed_video_tags %}
 
-
 {% block nav_buttons %}
-    
-<div class = 'nav_buttons col-xs-4'><a href="{% url 'videos' %}" class = "btn btn-info btn-sm">Browse Videos</a></div>
-<div class = 'nav_buttons col-xs-4'><a href="{% url 'my_video_edit' video.pk %}" class = "btn btn-warning btn-sm">Edit Video</a></div>
-<div class = 'nav_buttons col-xs-4'><a href="{% url 'videos' %}" class = "btn btn-dark btn-sm">Delete Video</a></div>
-
-
+    <li>
+        <a class="nav-link" href="{% url 'my_videos' %}">My Videos</a>
+    </li>
+    <li>
+        <a class="nav-link" href="{% url 'videos' %}">Browse</a>
+    </li>
 {% endblock nav_buttons %}
-
 
 {% block page_content %}
 
 
-    <h1 class = 'mb-5 text-center'>{{video.title}}</h1>
+    <h1 class = 'mb-4 text-center mt-4'>{{video.title}}</h1>
     <div class = "d-flex flex-wrap justify-content-center">
         <div class = "px-3 mb-5">
         {% comment %} {% video video.video 'tiny' %} {% endcomment %}
@@ -23,6 +21,13 @@
                 <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
             </video>
         </div>
+    </div>
+
+    <div class = "container-fluid text-center">
+        <a type="button" href = "{% url 'my_video_edit' video.pk %}" style = "margin-right: 1em;" class="btn btn-outline-primary">Edit</a>
+        <a type="button" href = "{% url 'my_video_delete' video.pk %}" class="btn btn-outline-danger">Delete</a>
+
+
     </div>
 
 {%endblock%}
