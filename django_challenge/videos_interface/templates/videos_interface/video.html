@@ -3,8 +3,9 @@
 
 {% block nav_buttons %}
     
-<div class = 'nav_buttons col-xs-4'><a href="{% url 'videos' %}" class = "btn btn-info btn-sm">Browse Videos</a></div>
-
+<li>
+    <a class="nav-link" href="{% url 'videos' %}">Browse</a>
+</li>
 
 {% endblock nav_buttons %}
 
@@ -20,7 +21,7 @@
 {% endif %} {% endcomment %}
 
 
-    <h1 class = 'mb-5 text-center'>{{video.title}}</h1>
+    <h1 class = 'mb-5 text-center mt-4'>{{video.title}}</h1>
     <div class = "d-flex flex-wrap justify-content-center">
         <div class = "px-3 mb-5">
         {% comment %} {% video video.video 'tiny' %} {% endcomment %}

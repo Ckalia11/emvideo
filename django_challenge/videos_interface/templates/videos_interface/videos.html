@@ -33,9 +33,6 @@
                 <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
             </a>
             <div class = "d-flex justify-content-center"> 
-                {% comment %} <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
-                    <button type = 'submit' class = 'btn' value = {{video.pk}} name = 'video'>{{video.title}}</button>
-                </form> {% endcomment %}
                 <h5 class = "video_title"> {{thumbnail.video.title}}</h5>
             </div>  
         </div>

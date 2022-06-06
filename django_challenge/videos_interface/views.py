@@ -29,7 +29,7 @@ EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
 def videos(request):
     logged_in = False
-    if not request.user.is_anonymous:
+    if request.user.is_authenticated:
         logged_in = True
     videos = Video.objects.all()  
     if not videos:
@@ -121,23 +121,15 @@ def my_video_delete(request, pk):
         except Exception as e:
             print(e)
     return redirect(reverse('my_videos'))
-        
-
-
-
-
 
 def _get_thumbnail(video):
     try:
         thumb = Thumbnail.objects.get(video = video)
-        print("Thumb", thumb)
     # generate image
     except Thumbnail.DoesNotExist:
-        print("VIDEo", video)
         video_path = str(video.videofile)
         input_path = os.path.join('media', video_path)
         vidcap = cv2.VideoCapture(input_path)
-        print("Success")
         success, image = vidcap.read()
         output_path = os.path.join('media','images', str(video.pk) + '.jpg')
         cv2.imwrite(output_path, image) 
@@ -210,6 +202,12 @@ def validate_email_create(email):
 def logout_view(request):
     logout(request)
     return redirect(reverse('login'))
+
+def login_view(request):    
+    if request.user.is_authenticated:
+        return redirect(reverse('videos'))
+    return render(request, "videos_interface/login.html")
+
         
 
 
