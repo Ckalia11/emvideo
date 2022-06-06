@@ -28,7 +28,6 @@ import json
 EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
 def videos(request):
-    print("SESSIoN", request.session.items())
     logged_in = False
     if not request.user.is_anonymous:
         logged_in = True
@@ -44,6 +43,7 @@ def videos(request):
 def my_videos(request):
     videos = Video.objects.filter(user = request.user)
     for video in videos:
+        print("my_videos", video)
         _get_thumbnail(video)
     thumbnails = Thumbnail.objects.all()
     if not videos:
@@ -57,8 +57,6 @@ def create_video(request):
     elif request.method == "POST":
         form = VideoForm(request.POST, request.FILES)
         if form.is_valid():
-            print("YO")
-            print("CLEANED", form.cleaned_data)
             title = form.cleaned_data.get("title")
             videofile = form.cleaned_data.get("videofile")
             user = request.user
@@ -112,12 +110,15 @@ def my_video_edit(request, pk):
 
 def _get_thumbnail(video):
     try:
-        _ = Thumbnail.objects.get(video = video)
+        thumb = Thumbnail.objects.get(video = video)
+        print("Thumb", thumb)
     # generate image
     except Thumbnail.DoesNotExist:
+        print("VIDEo", video)
         video_path = str(video.videofile)
         input_path = os.path.join('media', video_path)
         vidcap = cv2.VideoCapture(input_path)
+        print("Success")
         success, image = vidcap.read()
         output_path = os.path.join('media','images', str(video.pk) + '.jpg')
         cv2.imwrite(output_path, image) 

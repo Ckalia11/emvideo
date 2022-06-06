@@ -8,9 +8,9 @@ from django.urls import reverse
 # should have a user table
 
 class Video(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, blank=True)
     # video = EmbedVideoField()
-    videofile= models.FileField(upload_to='videos/', null=True, blank=True, verbose_name="")
+    videofile= models.FileField(upload_to='videos/', verbose_name="", blank=True)
     clicks = models.IntegerField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 

@@ -9,13 +9,47 @@
 
 {% block page_content %}
 
-<h1 class = 'mb-5 text-center'>Create a Video</h1>
-<form enctype="multipart/form-data" method="POST" action="">
-    {% csrf_token %}
-    {{form.title }}
-    {{form.videofile}}
-    <input type="submit" value="Upload"/>
-</form>
+<script>
+
+    function add() {
+        var br = document.createElement("br");
+        var createVideoTitle  = document.querySelector(".invalid-create-title");
+        var createVideoFile  = document.querySelector(".invalid-create-videofile");
+    }
+
+    
+</script>
+
+<h1 class = 'mb-2 text-center mt-4'>Create a Video</h1>
+<div class = "container-fluid" style = "max-width: 75%;">
+<div class = "form-group">
+    <form enctype="multipart/form-data" method="POST" action=""> {% csrf_token %}
+            <label for={{form.title.id}}>Title</label>
+            {{form.title}}
+            <div class = "invalid-feedback invalid-create-title" style = "display:block;">
+                {% for error in form.title.errors %}
+                    <p style = "margin-bottom: 0px;">{{error}}</p>
+                {%endfor%}
+            </div> <br>
+            
+            <label for={{form.videofile.id}}>Video <span style = 'color: grey;'>(.mp4)</span></label>
+            {{form.videofile}}
+            <div class = "invalid-feedback invalid-create-videofile" style = "display:block;">
+                {% for error in form.videofile.errors %}
+                    <p style = "margin-bottom: 0px;">{{error}}</p>
+                {%endfor%}
+            </div> <br>
+            
+            {% for error in form.non_field_errors %}
+                <div class = "invalid-feedback invalid-create-video" style = "display:block;">
+                    <p>{{error}}</p>
+                </div>
+            {%endfor%}
+            <input type="submit" class = "btn btn-primary" onclick = "add()" value="Upload"/>
+    </form>
+
+</div>
+</div>
 
 </body>
 </html>
