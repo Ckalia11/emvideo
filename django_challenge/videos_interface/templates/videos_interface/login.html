@@ -9,7 +9,7 @@
 </head>
 <body>
     {% block jumbotron %}
-    <div class = "container-fluid" style = "margin-top: 2em; max-width: 75%;">
+    <div class = "container-fluid mt-5" style = "max-width: 75%;">
     <div class="jumbotron">
         <h1 class="display-4">Hello, there!</h1>
         <p class="lead">Welcome to emvideo! Click below to browse popular videos or sign up to add content and find videos reccomended
@@ -17,11 +17,12 @@
         </p>
         <hr class="my-3">
         <p class="lead">
-            <a class="btn btn-primary btn-md" href="{% url 'videos' %}" role="button">Browse</a>
+            <a class="btn btn-lg btn-color" href="{% url 'videos' %}" role="button" style = "color:white;
+            background-color: #405681";>Browse</a>
           </p>
       </div>
     </div>
-      {% endblock %}
+    {% endblock %}
 
     {% block login_button %}
     {% comment %} KEEP EMPTY {% endcomment %}
@@ -55,7 +56,8 @@
                   <input type="password" class="form-control" id="login-password" name = "login-password" placeholder="Password">
                 </div>
                 <div class = "invalid-feedback invalid-login" style = "display:none"></div>
-                <div class="text-center"><button type="submit" id = "login-submit" class="btn btn-color px-5 mb-2 w-100">Login</button></div>
+                <div class="text-center"><button type="submit" id = "login-submit" class="btn px-5 mb-2 w-100" style = "color:white;
+                  background-color: #405681";>Login</button></div>
               </form>
 
               {% endif %}
