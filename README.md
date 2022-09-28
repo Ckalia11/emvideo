@@ -11,4 +11,5 @@ emvideo is not currently hosted on the web. To use emvideo you need to:
 - Clone this repository
 - Install Python and Django
 - At the level where `manage.py` is located, run the command `python manage.py runserver`
+- Visit the localhost of your computer at `127.0.0.1`
 
