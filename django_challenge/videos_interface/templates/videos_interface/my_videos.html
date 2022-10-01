@@ -2,7 +2,7 @@
 
 {% block nav_buttons %}
     <li>
-        <a class="nav-link" href="{% url 'create_video' %}">Create Video</a>
+        <a class="navbar-brand" href="{% url 'create_video' %}">Create Video</a>
     </li>
 {% endblock nav_buttons %}
 
@@ -25,7 +25,7 @@
         {% for thumbnail in thumbnails %}
         <div class = "px-3 mb-5">
             <a href = "{% url 'my_video_detail' thumbnail.video.pk %}">
-                <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
+                <img src='{{ MEDIA_URL }}{{ thumbnail.image_path }}' width="300" height="200">
             </a>
              {% comment %} {% video obj.video '426x240' %} {% endcomment %}
             <div class = "d-flex justify-content-center"> 

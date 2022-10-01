@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 from xml.dom import ValidationErr
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from .models import Video, Comment, Clicks, Thumbnail
+from .models import Channel, Video, Comment, Clicks, Thumbnail
 from .forms import CommentForm, VideoForm
 from django.contrib import messages
 import os
@@ -29,15 +29,25 @@ EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
 def videos(request):
     logged_in = False
+    profile_picture = None
     if request.user.is_authenticated:
         logged_in = True
+        user = User.objects.get(pk=request.user.pk)
+        try:
+            channel = Channel.objects.get(user = user)
+            if channel.image:
+                profile_picture = channel.image
+            else:
+                profile_picture = "images/profile/default.png"
+        except Channel.DoesNotExist:
+            pass
     videos = Video.objects.all()  
     if not videos:
         messages.info(request, 'There are no videos.')
     for video in videos:
         _get_thumbnail(video)
     thumbnails = Thumbnail.objects.all()
-    context = {"thumbnails": thumbnails, "logged_in": logged_in}
+    context = {"thumbnails": thumbnails, "logged_in": logged_in, "profile_picture": profile_picture}
     return render(request, 'videos_interface/videos.html', context)
 
 def my_videos(request):
@@ -130,12 +140,14 @@ def _get_thumbnail(video):
         video_path = str(video.videofile)
         input_path = os.path.join('media', video_path)
         vidcap = cv2.VideoCapture(input_path)
+        # 1 second mark
+        vidcap.set(cv2.CAP_PROP_POS_MSEC,1000)
         success, image = vidcap.read()
-        output_path = os.path.join('media','images', str(video.pk) + '.jpg')
-        cv2.imwrite(output_path, image) 
-        # save image
-        thumb = Thumbnail.objects.create(image = File(open(output_path, 'rb')), video = video)
-        thumb.save()
+        if success:
+            thumbnail_path = os.path.join('images', 'thumbnails', str(video.pk) + '.jpg')
+            output_path = os.path.join('media', thumbnail_path)
+            cv2.imwrite(output_path, image) 
+            thumb = Thumbnail.objects.create(image_path = thumbnail_path, video = video)
 
 # def _add_click(request):
 #     if Clicks.objects.filter(user=request.user,video=video).exists():
@@ -147,7 +159,6 @@ def _get_thumbnail(video):
 
 
 def validate_login(request):
-    print('HEYOO')
     data = json.loads(request.body)
     username_or_email = data.get('username_or_email')
     password = data.get('password')
@@ -177,6 +188,7 @@ def validate_create_account(request):
     email_validation = validate_email_create(email)
     if username_validation.get('username_valid') and email_validation.get('email_valid'):
             user = User.objects.create_user(username = username, email = email, password = password)
+            channel = Channel.objects.create(user = user)
             login(request, user)
             messages.info(request, 'Account was created successfully');
     response = dict(username_validation)

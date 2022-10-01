@@ -26,7 +26,7 @@ class VideoForm(forms.ModelForm):
         title = self.cleaned_data.get('title')
         if not title:
             raise ValidationError('Please enter a title')
-        if len(title) > 10:
+        if len(title) > 30:
             raise ValidationError('Title is too long')
         return title
 

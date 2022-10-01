@@ -39,7 +39,7 @@
             {% for thumbnail in thumbnails %}
             <div class = "px-3 mb-5">
                 <a href = "{% url 'video_detail' thumbnail.video.pk %}">
-                    <img src='{{ MEDIA_URL }}{{ thumbnail.image }}' width="300" height="200">
+                    <img src='{{ MEDIA_URL }}{{ thumbnail.image_path }}' width="300" height="200">
                 </a>
                 <div class = "d-flex justify-content-center"> 
                     <h5 class = "video_title"> {{thumbnail.video.title}}</h5>

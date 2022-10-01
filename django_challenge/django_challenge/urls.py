@@ -38,6 +38,7 @@ urlpatterns = [
     path('accounts/create/validate_username_create/', csrf_exempt(views.validate_username_create), name = 'validate_username_create'),
     path('accounts/create/validate_email_create/', csrf_exempt(views.validate_email_create), name = 'validate_email_create'),
     path('accounts/logout', views.logout_view, name = 'logout'),
+    path('accounts/profile', TemplateView.as_view(template_name = 'videos_interface/profile.html'), name = 'profile'),
     path('videos/', include('videos_interface.urls')), 
     
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

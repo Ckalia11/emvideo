@@ -36,21 +36,23 @@
 		  {% endblock nav_search_bar %}
 
 		  {% block login_button %}
-			<ul class="navbar-nav ml-4">
-				{% if user.is_authenticated %}
-					 <li class="nav-item dropdown">
-						<a class="navbar-brand dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							{{request.user}}
-						</a>
-						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-							<a class="navbar-brand dropdown-item" href="{% url 'logout' %}">Logout</a>
-						</div>
-					 </li>
-				{% else %}
-					<a class="navbar-brand" href="{% url 'login' %}">Login</a>
-				{% endif %} 
-		  </ul> 
-		  {% endblock %}
+		  <ul class="navbar-nav ml-4">
+		  {% if user.is_authenticated %}
+             <li class="nav-item dropdown">
+                <a class="navbar-brand dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src='{{ MEDIA_URL }}images/profile/default.png' width="50" height="50">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+					<a class="navbar-brand dropdown-item" style = "color:black;" href="{% url 'profile' %}">Profile</a>
+                    <a class="navbar-brand dropdown-item" style = "color:black;" href="{% url 'logout' %}">Logout</a>
+                </div>
+             </li>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'login' %}">Login</a>
+        {% endif %} 
+  		</ul> 
+			
+		  {% endblock login_button %}
 
 		</div>
 	</nav>

@@ -32,11 +32,15 @@ class Clicks(models.Model):
         verbose_name_plural = 'Clicks'
 
 class Thumbnail(models.Model):
-    image = models.ImageField(null=True, blank=True, verbose_name="")
+    image_path = models.CharField(max_length=100, null=True)
     video = models.OneToOneField(
         Video,
         blank = True,
         null = True,
         on_delete=models.CASCADE,
     )
+
+class Channel(models.Model):
+    image = models.ImageField(null = True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
 
