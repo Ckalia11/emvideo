@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Video, Comment, Clicks, Thumbnail
+from .models import Video, Comment, Thumbnail
 from embed_video.admin import AdminVideoMixin
 
 
@@ -8,7 +8,16 @@ from embed_video.admin import AdminVideoMixin
 class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
     pass
 
-admin.site.register(Video, MyModelAdmin)
-admin.site.register(Comment)
-admin.site.register(Clicks)
-admin.site.register(Thumbnail)
+class VideoAdmin(admin.ModelAdmin):
+    readonly_fields=('id',)
+
+class ThumbnailAdmin(admin.ModelAdmin):
+    readonly_fields=('id',)
+
+class CommentAdmin(admin.ModelAdmin):
+    readonly_fields=('id',)
+
+admin.site.register(Video, VideoAdmin)
+admin.site.register(Thumbnail, ThumbnailAdmin)
+admin.site.register(Comment, CommentAdmin)
+

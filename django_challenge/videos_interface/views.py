@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 from xml.dom import ValidationErr
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from .models import Channel, Video, Comment, Clicks, Thumbnail
+from .models import Channel, Video, Comment, Thumbnail
 from .forms import CommentForm, VideoForm
 from django.contrib import messages
 import os
@@ -23,40 +23,69 @@ import regex as re
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 import json
-
+import sys
+from django.core.files.base import ContentFile
+from django.core.files.images import ImageFile
+from io import BytesIO
+from PIL import Image 
+import numpy as np
+from django_challenge.settings import MEDIA_URL
+from django.core.files import File
 
 EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
-def videos(request):
-    logged_in = False
+# get profile pic/channel
+def get_user_profile(request):
     profile_picture = None
     if request.user.is_authenticated:
-        logged_in = True
-        user = User.objects.get(pk=request.user.pk)
         try:
-            channel = Channel.objects.get(user = user)
-            if channel.image:
-                profile_picture = channel.image
-            else:
-                profile_picture = "images/profile/default.png"
-        except Channel.DoesNotExist:
-            pass
-    videos = Video.objects.all()  
-    if not videos:
+            user = User.objects.get(pk=request.user.pk)
+            try:
+                channel = Channel.objects.get(user = user)
+                if channel.image:
+                    profile_picture = channel.image
+                else:
+                    profile_picture = "images/profile/default.png"
+            except Channel.DoesNotExist:
+                raise ValidationErr("Channel does not exist")
+        except User.DoesNotExist:
+            raise ValidationErr("User does not exist")
+    return user
+
+def videos(request):
+    videos_count = Video.objects.count()
+    context = {}
+    if videos_count == 0:
         messages.info(request, 'There are no videos.')
-    for video in videos:
-        _get_thumbnail(video)
-    thumbnails = Thumbnail.objects.all()
-    context = {"thumbnails": thumbnails, "logged_in": logged_in, "profile_picture": profile_picture}
+    else:
+        thumbnails = Thumbnail.objects.all()
+        context["thumbnails"] = thumbnails
+
     return render(request, 'videos_interface/videos.html', context)
+
+def create_thumbnail(video):    
+    video_path = os.path.join(MEDIA_URL, str(video.videofile))
+    vidcap = cv2.VideoCapture(video_path)
+    # capture thumbnail at 1 second mark
+    vidcap.set(cv2.CAP_PROP_POS_MSEC, 1000)
+    success, array = vidcap.read()
+    if success:
+        thumbnail_name = f"thumbnail_for_video_{video.pk}.jpg"
+        frame_jpg = cv2.imencode('.jpg', array)
+        # get bytes array from tuple
+        file = ContentFile(frame_jpg[1])   
+        t = Thumbnail(video = video) 
+        t.image_file.save(thumbnail_name, file)
 
 def my_videos(request):
     context = {}
-    thumbnails = Thumbnail.objects.filter(video__user = request.user)
-    if not thumbnails:
-        messages.info(request, "You haven't created any videos.")
-    else:  
-        context["thumbnails"] = thumbnails
+    if request.user.is_authenticated:
+        videos_count = Video.objects.filter(user = request.user).count()
+        if videos_count == 0:
+            messages.info(request, "You haven't created any videos.")
+        else: 
+            thumbnails = Thumbnail.objects.filter(video__user = request.user)
+            context["thumbnails"] = thumbnails
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):
@@ -67,9 +96,8 @@ def create_video(request):
         if form.is_valid():
             title = form.cleaned_data.get("title")
             videofile = form.cleaned_data.get("videofile")
-            user = request.user
-            video = Video.objects.create(title = title, videofile = videofile, user = user)
-            _get_thumbnail(video)
+            video = Video.objects.create(title = title, videofile = videofile, user = request.user)
+            create_thumbnail(video)
             return redirect(reverse("my_videos"))
     context= {
               'form': form
@@ -77,29 +105,23 @@ def create_video(request):
     return render(request, 'videos_interface/create_video.html', context)
 
 def video_detail(request, pk):
-    if request.method == 'GET':
-        try:
-            video = Video.objects.get(pk=pk)
-        except ObjectDoesNotExist:
-            raise Http404("Video does not exist")
-        videos = Video.objects.all()
-        # comments = Comment.objects.filter(video = video)
-        form = CommentForm()
-        # add_click(request)
-    elif request.method == 'POST':
+    video = Video.objects.get(pk = pk)
+    if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
-            messages.success(request, "Comment was saved.")
             comment = form.cleaned_data['comment']
-            comment_object = Comment.objects.create(comment=comment, user = request.user, video = video)
-        else:
-            print(form.errors)
-    context = {'video': video, 'form': form, 'videos': videos}
+            Comment.objects.create(comment = comment, user = request.user, video = video)
+            messages.success(request, "Comment was saved.")
+            return redirect(reverse('video_detail', kwargs={"pk": pk}))
+    elif request.method == 'GET':
+        form = CommentForm()
+        comments = Comment.objects.filter(video__pk = pk)
+    context = {'video': video, 'form': form, 'comments': comments}
     return render(request, 'videos_interface/video.html', context)
 
 def my_video_detail(request, pk):
     video = Video.objects.get(pk=pk)
-    context = {'video':video}
+    context = {'video': video}
     return render(request, "videos_interface/my_video_detail.html", context)    
 
 def my_video_edit(request, pk):
@@ -118,36 +140,9 @@ def my_video_edit(request, pk):
             return redirect("my_videos")
 
 def my_video_delete(request, pk):
-    thumb = Thumbnail.objects.get(video=pk)
-    image_path = str(thumb.image)
-
-    if os.path.exists(image_path):
-        try:
-            os.remove(image_path)
-            try:
-                Thumbnail.objects.filter(video=pk).delete()
-            except Exception as e:
-                print(e)
-        except Exception as e:
-            print(e)
+    # deletes video instance, thumbnail instance, and thumbnail file on server
+    Video.objects.get(pk = pk).delete()
     return redirect(reverse('my_videos'))
-
-def _get_thumbnail(video):
-    try:
-        thumb = Thumbnail.objects.get(video = video)
-    # generate image
-    except Thumbnail.DoesNotExist:
-        video_path = str(video.videofile)
-        input_path = os.path.join('media', video_path)
-        vidcap = cv2.VideoCapture(input_path)
-        # 1 second mark
-        vidcap.set(cv2.CAP_PROP_POS_MSEC,1000)
-        success, image = vidcap.read()
-        if success:
-            thumbnail_path = os.path.join('images', 'thumbnails', str(video.pk) + '.jpg')
-            output_path = os.path.join('media', thumbnail_path)
-            cv2.imwrite(output_path, image) 
-            thumb = Thumbnail.objects.create(image_path = thumbnail_path, video = video)
 
 # def _add_click(request):
 #     if Clicks.objects.filter(user=request.user,video=video).exists():

@@ -2,13 +2,16 @@
 {% extends "videos_interface/base.html" %} 
 {% load static %}
 
+{% block css_file %}
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'videos.css' %}">  {% endcomment %}
+{% endblock css_file%}
 
 	{% block nav_buttons %}
-    {% if logged_in %}
-    <li class="nav-item">
-        <a class="navbar-brand" href="{% url 'my_videos' %}">My Videos</a>
-    </li> 
-    {% endif %}
+        {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="navbar-brand" href="{% url 'my_videos' %}">My Videos</a>
+            </li> 
+        {% endif %}
     {% endblock nav_buttons %}
 
     {% block nav_search_bar%}
@@ -24,33 +27,30 @@
 
         <h2 class="text-dark m-4 text-center mt-5 mb-5">Browse Popular Videos</h2>
 
-        {% comment %} {% for message in messages %}
+        {% for message in messages %}
             <div class="container p-0">
-            <div class="alert {{ message.tags }} alert-info" role="alert" >
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="True">&times;</span>
-                </button>
-                {{ message }}
+                <div class="alert {{ message.tags }} alert-info" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="True">&times;</span>
+                    </button>
+                    {{ message }}
+                </div>
             </div>
-            </div>
-        {% endfor %} {% endcomment %}
+        {% endfor %} 
 
         <div class = "d-flex flex-wrap justify-content-center">
             {% for thumbnail in thumbnails %}
-            <div class = "px-3 mb-5">
-                <a href = "{% url 'video_detail' thumbnail.video.pk %}">
-                    <img src='{{ MEDIA_URL }}{{ thumbnail.image_path }}' width="300" height="200">
-                </a>
-                <div class = "d-flex justify-content-center"> 
-                    <h5 class = "video_title"> {{thumbnail.video.title}}</h5>
-                </div>  
-            </div>
+                <div class = "px-3 mb-5">
+                    <a href = "{% url 'video_detail' thumbnail.video.pk %}">
+                        <img src='{{ MEDIA_URL }}{{ thumbnail.image_file }}' width="300" height="200">
+                    </a>
+                    <div class = "d-flex justify-content-center"> 
+                        <h5 class = "video_title"> {{ thumbnail.video.title }}</h5>
+                    </div>  
+                </div>
             {% endfor %} 
         </div>  
-
-       
-
-        <script src = "{% static 'videos_interface/js/create_account.js' %}"> </script>
-
     
 	{%endblock%}
+
+</body>
