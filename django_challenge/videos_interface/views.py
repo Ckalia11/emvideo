@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .models import Channel, Video, Comment, Thumbnail
 from .forms import CommentForm, VideoForm
-from django.contrib import messages
+# from django.contrib import messages
 import os
 import cv2
 from django.core.files import File  
@@ -52,15 +52,18 @@ def get_user_profile(request):
             raise ValidationErr("User does not exist")
     return user
 
+
 def videos(request):
     videos_count = Video.objects.count()
     context = {}
     if videos_count == 0:
-        messages.info(request, 'There are no videos.')
+        context['message'] = "There are no videos."
+    thumbnails = Thumbnail.objects.all()
+    context["thumbnails"] = thumbnails
+    if 'message' in context:
+        context['message_present'] = True
     else:
-        thumbnails = Thumbnail.objects.all()
-        context["thumbnails"] = thumbnails
-
+        context['message_present'] = False
     return render(request, 'videos_interface/videos.html', context)
 
 def create_thumbnail(video):    
@@ -82,10 +85,13 @@ def my_videos(request):
     if request.user.is_authenticated:
         videos_count = Video.objects.filter(user = request.user).count()
         if videos_count == 0:
-            messages.info(request, "You haven't created any videos.")
-        else: 
-            thumbnails = Thumbnail.objects.filter(video__user = request.user)
-            context["thumbnails"] = thumbnails
+            context['message'] = "You haven't uploaded any videos."
+        thumbnails = Thumbnail.objects.filter(video__user = request.user)
+        context["thumbnails"] = thumbnails
+        if 'message' in context:
+            context['message_present'] = True
+        else:
+            context['message_present'] = False
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):
@@ -111,7 +117,7 @@ def video_detail(request, pk):
         if form.is_valid():
             comment = form.cleaned_data['comment']
             Comment.objects.create(comment = comment, user = request.user, video = video)
-            messages.success(request, "Comment was saved.")
+            # messages.success(request, "Comment was saved.")
             return redirect(reverse('video_detail', kwargs={"pk": pk}))
     elif request.method == 'GET':
         form = CommentForm()

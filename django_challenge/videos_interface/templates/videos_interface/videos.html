@@ -27,16 +27,16 @@
 
         <h2 class="text-dark m-4 text-center mt-5 mb-5">Browse Popular Videos</h2>
 
-        {% for message in messages %}
+        {% if message_present %}
             <div class="container p-0">
-                <div class="alert {{ message.tags }} alert-info" role="alert" >
+                <div class="alert alert-info" role="alert" >
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="True">&times;</span>
                     </button>
                     {{ message }}
                 </div>
             </div>
-        {% endfor %} 
+        {% endif %}
 
         <div class = "d-flex flex-wrap justify-content-center">
             {% for thumbnail in thumbnails %}
