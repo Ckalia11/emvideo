@@ -47,9 +47,9 @@
                     <div class = "d-flex justify-content-center"> 
                         {% with max_length_video_title=15 %}
                             {% if thumbnail.video.title|length > max_length_video_title %}
-                            <h5 class = "video_title"> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
+                                <h5 class = "video_title"> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
                             {% else %}
-                                {{ thumbnail.video.title }}
+                                <h5 class = "video_title">{{ thumbnail.video.title }}</h5>
                             {% endif %}
                         {% endwith %}
                     </div>  

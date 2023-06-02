@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     #own
     'embed_video',
     'videos_interface',
-    'forms',
 ]
 
 MIDDLEWARE = [
