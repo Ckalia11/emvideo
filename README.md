@@ -8,7 +8,7 @@ content, and subscribe to content providers. The motivation behind building emvi
 emvideo is not currently hosted on the web. To use emvideo you need to:
 - Clone this repository
 - Install Python
-At the level where `manage.py` is located, run the command `pip install -r requirements.txt` to install any dependencies
+- At the level where `manage.py` is located, run the command `pip install -r requirements.txt` to install any dependencies
 - At the same level, run the command `python manage.py runserver` to start the application
 - Visit the localhost of your computer at `127.0.0.1`
 
