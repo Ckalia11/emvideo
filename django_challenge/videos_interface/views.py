@@ -7,7 +7,7 @@ from xml.dom import ValidationErr
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .models import Channel, Video, Comment, Thumbnail
-from .forms import CommentForm, VideoForm
+from .forms import CommentForm, VideoForm, VideoSearchForm
 # from django.contrib import messages
 import os
 import cv2
@@ -220,6 +220,18 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect(reverse('videos'))
     return render(request, "videos_interface/login.html")
+
+def video_search(request):
+    form = VideoSearchForm()
+    videos = []
+
+    if request.method == 'GET':
+        form = VideoSearchForm(request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data['search_query']
+            videos = Video.objects.filter(title__icontains=search_query)  # Adjust based on your Video model and search field
+
+    return render(request, 'videos_interface/video_search.html', {'form': form, 'videos': videos})
 
         
 

@@ -1,19 +1,12 @@
 {% extends "videos_interface/base.html" %} 
+{% load custom_filters %}
+
 
 {% block nav_buttons %}
     <li>
         <a class="navbar-brand" href="{% url 'create_video' %}">Create Video</a>
     </li>
 {% endblock nav_buttons %}
-
-{% block nav_search_bar%}
-
-    <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2 btn-lg" type="search" placeholder="Search Videos" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
-    </form> 
-
-{% endblock nav_search_bar%}
 
 {% block page_content %}
 
@@ -41,7 +34,13 @@
                 {% comment %} <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
                     <button type = 'submit' class = 'btn' value = {{video.pk}} name = 'video'>{{video.title}}</button>
                 </form> {% endcomment %}
-                <h5 class = "video_title"> {{thumbnail.video.title}}</h5>
+                {% with max_length_video_title=15 %}
+                    {% if thumbnail.video.title|length > max_length_video_title %}
+                    <h5 class = "video_title"> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
+                    {% else %}
+                        {{ thumbnail.video.title }}
+                    {% endif %}
+                {% endwith %}
             </div>  
         </div>
         {% endfor %} 

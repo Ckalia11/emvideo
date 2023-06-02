@@ -30,6 +30,7 @@ from django.views.generic import TemplateView
 
 
 urlpatterns = [
+    path('', views.login_view),
     path('admin/', admin.site.urls),
     path('accounts/login/', views.login_view, name='login'),
     path('accounts/login/validate_login/', csrf_exempt(views.validate_login), name = 'validate_login'),

@@ -3,6 +3,12 @@ from .models import Video
 from django.forms import ModelForm, ValidationError
 import os
 
+class VideoSearchForm(forms.Form):
+    search_query = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search videos'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["search_query"].widget.attrs['class'] = 'form-control mr-sm-2 btn-lg'
 
 class CommentForm(forms.Form):
     comment = forms.CharField(max_length=10)
@@ -26,8 +32,6 @@ class VideoForm(forms.ModelForm):
         title = self.cleaned_data.get('title')
         if not title:
             raise ValidationError('Please enter a title')
-        if len(title) > 30:
-            raise ValidationError('Title is too long')
         return title
 
     def clean_videofile(self):

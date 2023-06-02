@@ -74,6 +74,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                # Other context processors
+                'videos_interface.context_processors.video_search_form',
+                
             ],
         },
     },

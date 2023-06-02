@@ -1,9 +1,11 @@
 
 {% extends "videos_interface/base.html" %} 
 {% load static %}
+{% load custom_filters %}
+
 
 {% block css_file %}
-    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'videos.css' %}">  {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="{% static 'videos.css' %}"> 
 {% endblock css_file%}
 
 	{% block nav_buttons %}
@@ -13,15 +15,6 @@
             </li> 
         {% endif %}
     {% endblock nav_buttons %}
-
-    {% block nav_search_bar%}
-
-    <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2 btn-lg" type="search" placeholder="Search Videos" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
-    </form> 
-
-    {% endblock nav_search_bar%}
 
     {% block page_content %}
 
@@ -45,7 +38,13 @@
                         <img src='{{ MEDIA_URL }}{{ thumbnail.image_file }}' width="300" height="200">
                     </a>
                     <div class = "d-flex justify-content-center"> 
-                        <h5 class = "video_title"> {{ thumbnail.video.title }}</h5>
+                        {% with max_length_video_title=15 %}
+                            {% if thumbnail.video.title|length > max_length_video_title %}
+                            <h5 class = "video_title"> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
+                            {% else %}
+                                {{ thumbnail.video.title }}
+                            {% endif %}
+                        {% endwith %}
                     </div>  
                 </div>
             {% endfor %} 

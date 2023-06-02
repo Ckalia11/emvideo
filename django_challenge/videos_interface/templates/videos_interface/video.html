@@ -9,62 +9,40 @@
 
 {% endblock nav_buttons %}
 
-
 {% block page_content %}
 
-{% comment %} {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-    {% endfor %}
-</ul>
-{% endif %} 
-
-
-    <h1 class = 'mb-5 text-center mt-4'>{{video.title}}</h1>
-    <div class = "d-flex flex-wrap justify-content-center">
-        <div class = "px-3 mb-5">
-        {% comment %} {% video video.video 'tiny' %} {% endcomment %}
-            <video width='400' controls>
-                <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
-            </video>
-        </div>
+<h1 class = 'mb-5 text-center mt-4'>{{video.title}}</h1>
+<div class = "d-flex flex-wrap justify-content-center">
+    <div class = "px-3 mb-5">
+        <video width='400' controls>
+        <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
+        </video>
     </div>
+</div>
 
-    <h3 class = "mb-5 text-center">Leave a comment</h3>
-        <form action = "" method="post"> {% csrf_token %}
-            <div class = "container">
-                <div class = "row">
-                    <div class = "col-12">
-                        <div class = "d-flex justify-content-center">
-                            {{form.as_p}}
-                            <input type = "submit" style = "margin-left: 1em; padding: 0px;" value="Submit">
-                        </div>
+    <!-- <h3 class = "mb-5 text-center">Leave a comment</h3>
+    <form action = "" method="post"> {% csrf_token %}
+        <div class = "container">
+            <div class = "row">
+                <div class = "col-12">
+                    <div class = "d-flex justify-content-center">
+                        {{form.as_p}}
+                        <input type = "submit" style = "margin-left: 1em; padding: 0px;" value="Submit">
                     </div>
-                    <div class = "col-12">
-                        <div class = "d-flex justify-content-center">
-                            {% for comment in comments %}
-                                {{comment.comment}}
-                                {{comment.user}} <br>
-                            {%endfor%}
-                            
-                        </div>
+                </div>
+                <div class = "col-12">
+                    <div class = "d-flex justify-content-center">
+                        {% for comment in comments %}
+                            {{comment.comment}}
+                            {{comment.user}} <br>
+                        {%endfor%}
+                        
                     </div>
                 </div>
             </div>
-        </form>
-
-    <h3 class = "mb-5 text-center">Browse Related Videos:</h3>
-
-    {% comment %} <div class = "d-flex flex-wrap">
-        {% for v in videos %}
-        <div class = "px-3 mb-5">
-            {% video v.video '426x240' %}
-            <div class = "d-flex justify-content-start">
-                <a  href="{% url 'video_detail' v.pk %}">{{v.title}}</a>
-            </div>  
         </div>
-        {% endfor %} 
-    </div>  {% endcomment %}
+    </form> -->
+
+<!-- <h3 class = "mb-5 text-center">Browse Related Videos:</h3>
 
 {%endblock%}
