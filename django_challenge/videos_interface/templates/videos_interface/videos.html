@@ -16,6 +16,13 @@
         {% endif %}
     {% endblock nav_buttons %}
 
+    {% block search_bar %}
+        <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'video_search' 0 %}"> {% csrf_token %}
+            {{ video_search_form.search_query }}
+            <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
+        </form>
+    {% endblock search_bar %}
+
     {% block page_content %}
 
         <h2 class="text-dark m-4 text-center mt-5 mb-5">Browse Popular Videos</h2>
