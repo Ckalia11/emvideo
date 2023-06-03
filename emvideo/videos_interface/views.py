@@ -34,6 +34,9 @@ from django.core.files import File
 
 EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
+def root_view(request):
+    return redirect("login")
+
 # get profile pic/channel
 def get_user_profile(request):
     profile_picture = None
@@ -106,7 +109,6 @@ def my_videos(request):
             context['message_present'] = True
         else:
             context['message_present'] = False
-        print("CONTEXT", context)
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):
