@@ -53,8 +53,10 @@ def get_user_profile(request):
     return user
 
 def videos(request):
-    videos_count = Video.objects.count()
     context = {}
+    search_form = VideoSearchForm()
+    context["search_form"] = search_form
+    videos_count = Video.objects.count()
     if videos_count == 0:
         context['message'] = "There are no videos."
     thumbnails = Thumbnail.objects.all()
@@ -67,11 +69,11 @@ def videos(request):
 
 def video_search(request, filter_account_videos):
     if request.method == 'POST':
-        form = VideoSearchForm(request.POST)
-        if form.is_valid():
-            search_query = form.cleaned_data['search_query']
-            thumbnails = Thumbnail.objects.filter(video__title__icontains=search_query) 
-            context = {"thumbnails": thumbnails}
+        search_form = VideoSearchForm(request.POST)
+        if search_form.is_valid():
+            search_query = search_form.cleaned_data['search_query']
+            thumbnails = Thumbnail.objects.filter(video__title__startswith=search_query) 
+            context = {"thumbnails": thumbnails, "search_form": search_form}
     if filter_account_videos:
         return render(request, 'videos_interface/my_videos.html', context)
     return render(request, 'videos_interface/videos.html', context)
@@ -93,6 +95,8 @@ def create_thumbnail(video):
 def my_videos(request):
     context = {}
     if request.user.is_authenticated:
+        search_form = VideoSearchForm()
+        context["search_form"] = search_form
         videos_count = Video.objects.filter(user = request.user).count()
         if videos_count == 0:
             context['message'] = "You haven't uploaded any videos."
@@ -102,6 +106,7 @@ def my_videos(request):
             context['message_present'] = True
         else:
             context['message_present'] = False
+        print("CONTEXT", context)
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):

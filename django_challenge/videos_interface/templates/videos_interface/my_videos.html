@@ -1,6 +1,10 @@
 {% extends "videos_interface/base.html" %} 
+{% load static %}
 {% load custom_filters %}
 
+{% block css_file %}
+    <link rel="stylesheet" type="text/css" href="{% static 'myvideos.css' %}"> 
+{% endblock css_file%}
 
 {% block nav_buttons %}
     <li>
@@ -10,7 +14,7 @@
 
 {% block search_bar %}
     <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'video_search' 1 %}"> {% csrf_token %}
-        {{ video_search_form.search_query }}
+        {{ search_form.search_query }}
         <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
     </form>
 {% endblock search_bar %}
@@ -32,23 +36,21 @@
 
     <div class = "d-flex flex-wrap justify-content-center">
         {% for thumbnail in thumbnails %}
-        <div class = "px-3 mb-5">
+        <div class = "video-container mb-5">
             <a href = "{% url 'my_video_detail' thumbnail.video.pk %}">
                 <img src='{{ MEDIA_URL }}{{ thumbnail.image_file }}' width="300" height="200">
             </a>
-             {% comment %} {% video obj.video '426x240' %} {% endcomment %}
-            <div class = "d-flex justify-content-center"> 
-                {% comment %} <form action = {% url 'video_detail' video.pk %} method = 'post'>  {% csrf_token %}
-                    <button type = 'submit' class = 'btn' value = {{video.pk}} name = 'video'>{{video.title}}</button>
-                </form> {% endcomment %}
+            <div class="video-details">
                 {% with max_length_video_title=15 %}
                     {% if thumbnail.video.title|length > max_length_video_title %}
-                        <h5 class = "video_title"> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
+                        <h6> {{ thumbnail.video.title|truncate_chars:max_length_video_title }}</h5>
                     {% else %}
-                        <h5 class = "video_title">{{ thumbnail.video.title }}</h5>
+                        <h6>{{ thumbnail.video.title }}</h5>
                     {% endif %}
                 {% endwith %}
-            </div>  
+                <p>{{ thumbnail.video.created|date:"Y-m-d"  }}</p>
+                <p>{{ thumbnail.video.user.username }}</p>
+            </div>
         </div>
         {% endfor %} 
     </div>          
