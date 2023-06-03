@@ -1,0 +1,48 @@
+{% extends "videos_interface/base.html" %} 
+{% load embed_video_tags %}
+
+{% block nav_buttons %}
+    
+<li>
+    <a class="navbar-brand" href="{% url 'videos' %}">Browse</a>
+</li>
+
+{% endblock nav_buttons %}
+
+{% block page_content %}
+
+<h1 class = 'mb-5 text-center mt-4'>{{video.title}}</h1>
+<div class = "d-flex flex-wrap justify-content-center">
+    <div class = "px-3 mb-5">
+        <video width='400' controls>
+        <source src='{{ MEDIA_URL }}{{ video.videofile }}' type='video/mp4'>
+        </video>
+    </div>
+</div>
+
+    <!-- <h3 class = "mb-5 text-center">Leave a comment</h3>
+    <form action = "" method="post"> {% csrf_token %}
+        <div class = "container">
+            <div class = "row">
+                <div class = "col-12">
+                    <div class = "d-flex justify-content-center">
+                        {{form.as_p}}
+                        <input type = "submit" style = "margin-left: 1em; padding: 0px;" value="Submit">
+                    </div>
+                </div>
+                <div class = "col-12">
+                    <div class = "d-flex justify-content-center">
+                        {% for comment in comments %}
+                            {{comment.comment}}
+                            {{comment.user}} <br>
+                        {%endfor%}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form> -->
+
+<!-- <h3 class = "mb-5 text-center">Browse Related Videos:</h3>
+
+{%endblock%}
