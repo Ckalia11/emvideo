@@ -1,8 +1,7 @@
 # emvideo
 
-## emvideo
-emvideo is a video hosting platform that enables users to browse popular videos, upload and manage their own
-content, and subscribe to content providers. The motivation behind building emvideo was to see if I could built a platform like Youtube.
+## About
+emvideo is a platform that enables users to browse videos and upload and manage their own content. The motivation behind building emvideo was to build a full stack application from scratch and to try and mirror YouTube; a platform I use everyday.
 
 ## How to use emvideo
 emvideo is not currently hosted on the web. To use emvideo you need to:
