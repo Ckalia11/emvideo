@@ -56,30 +56,33 @@ def get_user_profile(request):
     return user
 
 def videos(request):
-    context = {}
-    search_form = VideoSearchForm()
-    context["search_form"] = search_form
-    videos_count = Video.objects.count()
-    if videos_count == 0:
-        context['message'] = "There are no videos."
-    thumbnails = Thumbnail.objects.all()
-    context["thumbnails"] = thumbnails
-    if 'message' in context:
-        context['message_present'] = True
+    search_query = request.session.get('search_query')
+    # Remove the search query from the session
+    if search_query:
+        del request.session['search_query']
+        request.session.modified = True
+        thumbnails = Thumbnail.objects.filter(video__title__startswith=search_query)
     else:
-        context['message_present'] = False
+        thumbnails = Thumbnail.objects.all()
+    search_form = VideoSearchForm()
+    context = {"thumbnails": thumbnails, "search_query": search_query, 'search_form': search_form}
+    if Video.objects.count() == 0:
+        context['message'] = "There are no videos."
     return render(request, 'videos_interface/videos.html', context)
 
 def video_search(request, filter_account_videos):
-    if request.method == 'POST':
-        search_form = VideoSearchForm(request.POST)
-        if search_form.is_valid():
-            search_query = search_form.cleaned_data['search_query']
-            thumbnails = Thumbnail.objects.filter(video__title__startswith=search_query) 
-            context = {"thumbnails": thumbnails, "search_form": search_form}
+    search_form = VideoSearchForm(request.GET)
+    if search_form.is_valid():
+        search_query = search_form.cleaned_data['search_query']
+        request.session['search_query'] = search_query
+        request.session.modified = True
+    else:
+        search_query = None
+    query_paramater = f'?query={search_query}' if search_query else ""
     if filter_account_videos:
-        return render(request, 'videos_interface/my_videos.html', context)
-    return render(request, 'videos_interface/videos.html', context)
+        return redirect(reverse('my_videos') + query_paramater)
+    else:
+        return redirect(reverse('videos') + query_paramater)
 
 def create_thumbnail(video):    
     video_path = os.path.join(MEDIA_URL, str(video.videofile))
@@ -96,19 +99,18 @@ def create_thumbnail(video):
         t.image_file.save(thumbnail_name, file)
 
 def my_videos(request):
-    context = {}
-    if request.user.is_authenticated:
+    if request.user.is_authenticated:        
+        search_query = request.session.get('search_query')
+        thumbnails = Thumbnail.objects.filter(video__user = request.user)
+        if search_query:
+            del request.session['search_query']
+            request.session.modified = True
+            thumbnails = thumbnails.filter(video__title__startswith=search_query)        
         search_form = VideoSearchForm()
-        context["search_form"] = search_form
+        context = {"thumbnails": thumbnails, "search_query": search_query, 'search_form': search_form}
         videos_count = Video.objects.filter(user = request.user).count()
         if videos_count == 0:
             context['message'] = "You haven't uploaded any videos."
-        thumbnails = Thumbnail.objects.filter(video__user = request.user)
-        context["thumbnails"] = thumbnails
-        if 'message' in context:
-            context['message_present'] = True
-        else:
-            context['message_present'] = False
     return render(request, 'videos_interface/my_videos.html', context)
 
 def create_video(request):

@@ -4,9 +4,9 @@
 {% load custom_filters %}
 
 
-{% block css_file %}
-    <link rel="stylesheet" type="text/css" href="{% static 'videos.css' %}"> 
-{% endblock css_file%}
+    {% block css_file %}
+        <link rel="stylesheet" type="text/css" href="{% static 'videos.css' %}"> 
+    {% endblock css_file%}
 
 	{% block nav_buttons %}
         {% if request.user.is_authenticated %}
@@ -17,17 +17,22 @@
     {% endblock nav_buttons %}
 
     {% block search_bar %}
-        <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'video_search' 0 %}"> {% csrf_token %}
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'video_search' 0 %}"> {% csrf_token %}
             {{ search_form.search_query }}
             <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
         </form>
+
+        <script>
+            var searchInput = document.querySelector('input[name="search_query"]');
+            searchInput.value = '{{ search_query|default_if_none:"" }}';
+        </script>
     {% endblock search_bar %}
 
     {% block page_content %}
 
     <h2 class="text-dark m-4 text-center mt-5 mb-5">Browse Popular Videos</h2>
 
-        {% if not request.user.is_authenticated %}
+        <!-- {% if not request.user.is_authenticated %}
             <div class="container p-0">
                 <div class="alert alert-warning" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -36,9 +41,9 @@
                     Please sign in to be able to upload videos
                 </div>
             </div>
-        {% endif %}
+        {% endif %} -->
 
-        {% if message_present %}
+        {% if message %}
             <div class="container p-0">
                 <div class="alert alert-info" role="alert" >
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

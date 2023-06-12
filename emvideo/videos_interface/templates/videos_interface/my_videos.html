@@ -13,10 +13,15 @@
 {% endblock nav_buttons %}
 
 {% block search_bar %}
-    <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'video_search' 1 %}"> {% csrf_token %}
+    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'video_search' 1 %}"> {% csrf_token %}
         {{ search_form.search_query }}
         <button class="btn btn-outline-success my-2 my-sm-0 btn-lg" type="submit">Search</button>
     </form>
+
+    <script>
+        var searchInput = document.querySelector('input[name="search_query"]');
+        searchInput.value = '{{ search_query|default_if_none:"" }}';
+    </script>
 {% endblock search_bar %}
 
 {% block page_content %}
