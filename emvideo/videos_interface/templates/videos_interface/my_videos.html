@@ -39,6 +39,7 @@
         <div class = "video-container mb-5">
             <a href = "{% url 'my_video_detail' thumbnail.video.pk %}">
                 <img src='{{ MEDIA_URL }}{{ thumbnail.image_file }}' width="300" height="200">
+                <div class="overlay"></div>
             </a>
             <div class="video-details">
                 {% with max_length_video_title=15 %}
