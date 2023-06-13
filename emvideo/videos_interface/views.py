@@ -1,36 +1,18 @@
-from http.client import HTTPResponse
-from msilib.schema import Error
-import re
-from turtle import title
-from urllib.error import HTTPError
 from xml.dom import ValidationErr
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .models import Channel, Video, Comment, Thumbnail
 from .forms import CommentForm, VideoForm, VideoSearchForm
-# from django.contrib import messages
 import os
 import cv2
-from django.core.files import File  
-from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.db.utils import IntegrityError
 import regex as re
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 import json
-import sys
 from django.core.files.base import ContentFile
-from django.core.files.images import ImageFile
-from io import BytesIO
-from PIL import Image 
-import numpy as np
 from emvideo.settings import MEDIA_URL
-from django.core.files import File
 
 EMAIL_REGEX = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
