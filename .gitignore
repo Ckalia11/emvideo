@@ -1,3 +1,5 @@
+__pycache__/
 emvideo/__pycache__/
-emvideo/db.sqlite3
+videos_interface/__pycache__/
+db.sqlite3
 venv/
