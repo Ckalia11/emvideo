@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo $1
+echo $2
+
 # Check if there are any changes to commit
 if [[ -n $(git status -s) ]]; then
 
