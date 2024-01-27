@@ -16,7 +16,7 @@ if [[ -n $(git status -s) ]]; then
     commit_message="WIP"
 
     if ["$1"]; then
-        $commit_message=$1        
+        commit_message=$1        
     fi
 
     # Commit with a default message or you can customize it
