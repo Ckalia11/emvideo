@@ -43,6 +43,7 @@ def get_user_profile(request):
 
 
 def videos(request):
+    print("yo waht is god")
     # search_query = request.session.get('search_query')
     # Remove the search query from the session
     # if search_query:
