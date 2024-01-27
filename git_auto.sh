@@ -15,7 +15,7 @@ if [[ -n $(git status -s) ]]; then
     # Default commit message
     commit_message="WIP"
 
-    if ["$1"]; then
+    if [ "$1" ]; then
         commit_message=$1        
     fi
 
