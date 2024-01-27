@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo $1
-echo $2
-
 # Check if there are any changes to commit
 if [[ -n $(git status -s) ]]; then
 
@@ -15,8 +12,15 @@ if [[ -n $(git status -s) ]]; then
     # Add all changes
     git add .
 
+    # Default commit message
+    commit_message="WIP"
+
+    if ["$1"]; then
+        $commit_message=$1        
+    fi
+
     # Commit with a default message or you can customize it
-    git commit -m "Auto commit"
+    git commit -m "$commit_message"
 
     # Push to the remote repository
     git push
