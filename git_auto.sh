@@ -2,6 +2,9 @@
 
 # Check if there are any changes to commit
 if [[ -n $(git status -s) ]]; then
+    # Get the current branch name
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    echo "Current branch: $branch"
     # Add all changes
     git add .
 
