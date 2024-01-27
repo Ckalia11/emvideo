@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Check if current directory or any parent directories are Git repositories
+while [[ ! -d .git && $PWD != '/' ]]; do
+    cd ..
+done
+
+if [[ $PWD == '/' ]]; then
+    echo "No Git repository found."
+    exit 1
+fi
+
 # Check if there are any changes to commit
 if [[ -n $(git status -s) ]]; then
 
