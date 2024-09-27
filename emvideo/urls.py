@@ -27,19 +27,24 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 
-
-
 urlpatterns = [
+    path("__debug__/", include("debug_toolbar.urls")),
     path('', views.root_view),
     path('admin/', admin.site.urls),
     path('accounts/login/', views.login_view, name='login'),
-    path('accounts/login/validate_login/', csrf_exempt(views.validate_login), name = 'validate_login'),
-    path('accounts/create/', TemplateView.as_view(template_name = 'videos_interface/create_account.html'), name = 'create_account'),
-    path('accounts/create/validate_create_account/', csrf_exempt(views.validate_create_account), name = 'validate_create_account'),
-    path('accounts/create/validate_username_create/', csrf_exempt(views.validate_username_create), name = 'validate_username_create'),
-    path('accounts/create/validate_email_create/', csrf_exempt(views.validate_email_create), name = 'validate_email_create'),
-    path('accounts/logout', views.logout_view, name = 'logout'),
-    path('accounts/profile', TemplateView.as_view(template_name = 'videos_interface/profile.html'), name = 'profile'),
-    path('videos/', include('videos_interface.urls')), 
-    
-] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+    path('accounts/login/validate_login/',
+         csrf_exempt(views.validate_login), name='validate_login'),
+    path('accounts/create/', TemplateView.as_view(
+        template_name='videos_interface/create_account.html'), name='create_account'),
+    path('accounts/create/validate_create_account/',
+         csrf_exempt(views.validate_create_account), name='validate_create_account'),
+    path('accounts/create/validate_username_create/',
+         csrf_exempt(views.validate_username_create), name='validate_username_create'),
+    path('accounts/create/validate_email_create/',
+         csrf_exempt(views.validate_email_create), name='validate_email_create'),
+    path('accounts/logout', views.logout_view, name='logout'),
+    path('accounts/profile', TemplateView.as_view(
+        template_name='videos_interface/profile.html'), name='profile'),
+    path('videos/', include('videos_interface.urls')),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
